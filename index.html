@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>electron-demo</title>
+</head>
+<body>
+  <!-- package.json的main就是主进程, 
+    一般一个程序只有一个主进程,
+    一个或多个线程,
+    即:
+    一个主进程打开多个线程, 即打开了多个类似于 index.html 的窗口
+  -->
+  <h1>Hello world</h1>
+  <!-- 打开一个新页面 -->
+  <button id="btn">点我打开其他页面</button>
+
+  <script>
+    let btn = document.getElementById('btn')
+    /* 之前在 index.js 中引入 BrowserWindow 的方式
+    const { BrowserWindow } = require('electron')
+    */
+
+    // 此处通过使用remote模块 引入BrowserWindow
+    let { BrowserWindow } = require('electron').remote
+
+    window.onload = function() {
+      btn.onclick = () => {
+        let win = new BrowserWindow({
+          width: 500,
+          height: 500,
+          x: 500, // 相对于桌面左上角 向右位移 500px
+          y: 500 // 相对于桌面左上角 向下位移 500px
+        })
+
+        win.loadFile('other.html')
+      }
+    }
+
+    /*
+     * Uncaught TypeError: Cannot destructure property 'BrowserWindow' of 'require(...).remote' as it is undefined.
+     * 需要设置主进程的 webPreference: {
+     *  enableRemoteModule: true // 允许使用remote模块
+     * }
+    */
+
+  </script>
+</body>
+</html>
